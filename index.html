@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bostad — the honest Swedish home decision tool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf8f4; --card:#ffffff; --ink:#1a1916; --ink2:#46423a;
+  --gold:#b89339; --teal:#2f6f66; --rust:#a85436;
+  --line:rgba(26,25,22,.1); --mut:#8a8478;
+  --go:#2f6f66; --maybe:#b89339; --no:#a85436;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Fraunces',Georgia,serif;color:var(--ink);line-height:1.55;font-size:18px;
+  background:var(--bg);padding-bottom:40px;
+}
+.wrap{max-width:680px;margin:0 auto;padding:0 24px}
+.mono{font-family:'DM Mono',monospace;font-variant-numeric:tabular-nums}
+
+/* HEADER — one signature touch: a thin status line that "boots" */
+.head{padding:64px 0 36px}
+.status{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--mut);
+  display:flex;align-items:center;gap:8px;margin-bottom:28px}
+.status .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);
+  box-shadow:0 0 0 0 rgba(47,111,102,.5);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,111,102,.45)}70%{box-shadow:0 0 0 7px rgba(47,111,102,0)}100%{box-shadow:0 0 0 0 rgba(47,111,102,0)}}
+.kicker{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--rust)}
+h1{font-size:clamp(42px,9vw,66px);line-height:1.02;font-weight:500;letter-spacing:-.025em;margin:14px 0 10px;
+  font-optical-sizing:auto}
+h1 em{font-style:italic;font-weight:400}
+.lede{font-size:20px;color:var(--ink2);max-width:500px}
+
+/* SECTIONS */
+.sec{padding:40px 0;border-top:1px solid var(--line)}
+.step{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+h2{font-size:30px;font-weight:500;letter-spacing:-.015em;margin-bottom:4px}
+.sub{color:var(--mut);font-size:16px;margin-bottom:22px;font-style:italic}
+
+/* HOME ENTRY */
+.homes{display:flex;flex-direction:column;gap:16px}
+.hcard{border:1px solid var(--line);border-radius:14px;padding:20px;background:var(--card);
+  box-shadow:0 1px 2px rgba(26,25,22,.04)}
+.hcard .hh{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.hcard input.nm{flex:1;background:transparent;border:none;border-bottom:1px solid var(--line);
+  font-family:'Fraunces';font-weight:500;font-size:22px;color:var(--ink);padding:3px 2px}
+.hcard input.nm:focus{outline:none;border-bottom-color:var(--teal)}
+.hcard .del{background:none;border:none;color:var(--mut);cursor:pointer;font-size:16px;transition:.15s}
+.hcard .del:hover{color:var(--rust)}
+.tenure{display:flex;gap:8px;margin-bottom:16px}
+.tenure label{flex:1;cursor:pointer}.tenure input{display:none}
+.tenure span{display:block;text-align:center;padding:10px;border-radius:9px;font-family:'DM Mono',monospace;font-size:12px;
+  border:1px solid var(--line);color:var(--mut);transition:.18s}
+.tenure input:checked+span{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field.full{grid-column:1/-1}
+.field label{display:block;font-family:'DM Mono',monospace;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:4px}
+.field input{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;
+  font-family:'DM Mono',monospace;font-size:15px;color:var(--ink);padding:9px 10px;transition:.15s}
+.field input:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(47,111,102,.1)}
+.field .hint{font-size:11px;color:var(--mut);margin-top:3px;font-style:italic}
+.besik{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.besik label{cursor:pointer}.besik input{display:none}
+.besik span{font-family:'DM Mono',monospace;font-size:11px;padding:6px 11px;border-radius:20px;border:1px solid var(--line);color:var(--mut);transition:.15s}
+.besik input:checked+span{background:var(--gold);color:#fff;border-color:var(--gold)}
+.addbtn{width:100%;padding:14px;margin-top:6px;background:transparent;border:1px dashed var(--line);border-radius:11px;
+  color:var(--teal);font-family:'DM Mono',monospace;font-size:13px;cursor:pointer;transition:.15s}
+.addbtn:hover{border-color:var(--teal);background:rgba(47,111,102,.04)}
+
+/* SLIDERS */
+.wgrid{display:flex;flex-direction:column;gap:18px}
+.wrow{display:grid;grid-template-columns:84px 1fr 36px;align-items:center;gap:16px}
+.wrow label{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink2)}
+.wrow .wv{font-family:'DM Mono',monospace;font-size:15px;color:var(--rust);text-align:right}
+input[type=range]{-webkit-appearance:none;appearance:none;height:3px;border-radius:3px;background:var(--line);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--ink);cursor:pointer;transition:.15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border:none;border-radius:50%;background:var(--ink);cursor:pointer}
+
+/* RUN */
+.runbtn{width:100%;padding:19px;margin:8px 0;border:none;border-radius:12px;cursor:pointer;
+  font-family:'DM Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--bg);
+  background:var(--ink);transition:.2s}
+.runbtn:hover{background:#000;letter-spacing:.16em}.runbtn:active{transform:translateY(1px)}
+
+/* RESULTS */
+#results{display:none}
+.verdict{background:var(--ink);color:var(--bg);border-radius:16px;padding:36px 30px;text-align:center;margin:20px 0 8px}
+.verdict .vk{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.verdict .vn{font-size:clamp(32px,7vw,48px);font-weight:500;margin:10px 0 6px;letter-spacing:-.02em}
+.verdict .vn em{font-style:italic;font-weight:400}
+.verdict .vw{font-size:19px;color:rgba(250,248,244,.85);max-width:460px;margin:0 auto}
+.verdict .vc{font-family:'DM Mono',monospace;font-size:16px;color:var(--gold);margin-top:16px}
+
+.rank{display:flex;flex-direction:column;gap:11px}
+.rcard{display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.rcard.first{border:1.5px solid var(--gold)}
+.rcard .pos{font-family:'DM Mono',monospace;font-size:15px;color:var(--mut);min-width:24px}
+.rcard.first .pos{color:var(--gold)}
+.rcard .rinfo{flex:1}.rcard .rn{font-weight:500;font-size:20px}
+.rcard .rmeta{font-family:'DM Mono',monospace;font-size:12px;color:var(--mut)}
+.rcard .rscore{font-family:'DM Mono',monospace;font-size:19px;color:var(--teal)}
+.tagv{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:14px;color:#fff}
+.tagv.go{background:var(--go)}.tagv.maybe{background:var(--maybe)}.tagv.no{background:var(--no)}
+
+.flag{display:flex;gap:12px;padding:14px 16px;border-radius:10px;margin-bottom:10px;font-size:16px;align-items:flex-start}
+.flag.warn{background:rgba(168,84,54,.08);border-left:2px solid var(--rust)}
+.flag.ok{background:rgba(47,111,102,.08);border-left:2px solid var(--teal)}
+.flag b{font-weight:600}
+
+.checklist{border:1.5px solid var(--gold);border-radius:12px;padding:22px;background:rgba(184,147,57,.05);margin-top:20px}
+.checklist .h{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust);margin-bottom:14px}
+.checklist label{display:flex;gap:12px;align-items:flex-start;padding:8px 0;cursor:pointer;font-size:16.5px}
+.checklist input{margin-top:5px;accent-color:var(--teal);width:16px;height:16px}
+.checklist .src{font-size:12px;color:var(--mut);font-style:italic}
+
+.btnrow{display:flex;gap:12px;margin-top:16px}
+.btnrow button{flex:1;padding:13px;border-radius:10px;border:1px solid var(--line);background:var(--card);
+  font-family:'DM Mono',monospace;font-size:13px;cursor:pointer;transition:.15s;color:var(--ink)}
+.btnrow button:hover{border-color:var(--ink)}
+
+.disc{font-family:'DM Mono',monospace;font-size:11px;color:var(--mut);text-align:center;margin:28px auto;max-width:540px;line-height:1.8}
+.foot{text-align:center;padding:34px 0 20px;border-top:1px solid var(--line);margin-top:28px}
+.foot .nm{font-size:22px;font-weight:500}.foot .nm em{font-style:italic}
+.foot p{color:var(--mut);font-size:15px;margin-top:2px}
+.foot .links{font-family:'DM Mono',monospace;font-size:12px;margin-top:16px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.foot .links a{color:var(--rust);text-decoration:none}.foot .links a:hover{text-decoration:underline}
+</style></head><body>
+
+<div class="wrap">
+  <div class="head">
+    <div class="status"><span class="dot"></span>bostad · honest mode · running on your numbers only</div>
+    <div class="kicker">The honest Swedish home tool</div>
+    <h1>Bostad,<br><em>decoded.</em></h1>
+    <p class="lede">Stop comparing sticker prices. Enter the real numbers, see what each home actually costs to live in, and get one clear call — with the Swedish landmines flagged.</p>
+  </div>
+
+  <div class="sec">
+    <div class="step">01 — Load the homes</div>
+    <h2>The contenders</h2>
+    <p class="sub">Pull these from Hemnet, the listing, and the BRF's årsredovisning. Don't know a number yet? Leave it blank — it stays flagged, never guessed.</p>
+    <div class="homes" id="homes"></div>
+    <button class="addbtn" id="addBtn">＋ add another home</button>
+  </div>
+
+  <div class="sec">
+    <div class="step">02 — Set your priorities</div>
+    <h2>What matters to you</h2>
+    <p class="sub">Drag to weight each axis. It normalises, so it needn't total 100.</p>
+    <div class="wgrid">
+      <div class="wrow"><label>Cost</label><input type="range" min="0" max="50" value="30" id="w_cost"><div class="wv" id="wv_cost">30</div></div>
+      <div class="wrow"><label>BRF risk</label><input type="range" min="0" max="50" value="25" id="w_brf"><div class="wv" id="wv_brf">25</div></div>
+      <div class="wrow"><label>Commute</label><input type="range" min="0" max="50" value="20" id="w_commute"><div class="wv" id="wv_commute">20</div></div>
+      <div class="wrow"><label>Space</label><input type="range" min="0" max="50" value="15" id="w_space"><div class="wv" id="wv_space">15</div></div>
+      <div class="wrow"><label>Amenities</label><input type="range" min="0" max="50" value="10" id="w_bonus"><div class="wv" id="wv_bonus">10</div></div>
+    </div>
+  </div>
+
+  <button class="runbtn" id="runBtn">Calculate the honest call →</button>
+
+  <div id="results">
+    <div class="verdict">
+      <div class="vk">The call</div>
+      <div class="vn" id="winName">—</div>
+      <div class="vw" id="winWhy">—</div>
+      <div class="vc" id="winCost">—</div>
+    </div>
+    <div class="sec" style="border-top:none;padding-top:24px">
+      <div class="step">03 — The ranking</div>
+      <div class="rank" id="rankList"></div>
+    </div>
+    <div class="sec">
+      <div class="step">04 — Swedish landmines</div>
+      <div id="flagList"></div>
+    </div>
+    <div class="checklist">
+      <div class="h">✓ Check before you commit</div>
+      <div id="checkList"></div>
+    </div>
+    <div class="btnrow">
+      <button id="printBtn">Save as PDF</button>
+      <button id="resetBtn">Start over</button>
+    </div>
+  </div>
+
+  <p class="disc">A decision aid, not financial or legal advice. Every figure is the one you entered; blanks are flagged NOT YET VERIFIED rather than estimated. The cost model is a like-for-like comparison proxy, not your actual loan — always read the full årsredovisning, get a lånelöfte, and commission a besiktning before signing.</p>
+
+  <div class="foot">
+    <div class="nm">Bostad <em>Decoder</em></div>
+    <p>The honest Swedish home decision tool.</p>
+    <div class="links">
+      <a href="https://shamathakur.carrd.co">shamathakur.carrd.co</a>
+      <a href="https://ko-fi.com/shamathakur">Support the work</a>
+      <a href="https://substack.com/@shamathakur">Substack</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const fmt=n=>n.toLocaleString('sv-SE');
+let homeId=0;
+function tenureRow(id){return `
+  <div class="tenure">
+    <label><input type="radio" name="ten_${id}" value="brf" checked><span>Bostadsrätt</span></label>
+    <label><input type="radio" name="ten_${id}" value="own"><span>Äganderätt</span></label>
+  </div>`;}
+function homeCard(id,name){
+  const el=document.createElement('div');el.className='hcard';el.dataset.id=id;
+  el.innerHTML=`
+    <div class="hh">
+      <input class="nm" value="${name||''}" placeholder="Address or nickname">
+      <button class="del" title="remove">✕</button></div>
+    ${tenureRow(id)}
+    <div class="fields">
+      <div class="field"><label>Price (kr)</label><input class="f-price mono" inputmode="numeric" placeholder="4 995 000"><div class="hint">from Hemnet</div></div>
+      <div class="field"><label>Size (m²)</label><input class="f-size mono" inputmode="numeric" placeholder="110"></div>
+      <div class="field f-avgift-wrap"><label>Avgift (kr/mån)</label><input class="f-avgift mono" inputmode="numeric" placeholder="6 624"><div class="hint">bostadsrätt only</div></div>
+      <div class="field"><label>Drift (kr/yr)</label><input class="f-drift mono" inputmode="numeric" placeholder="39 000"><div class="hint">el, vatten, etc</div></div>
+      <div class="field"><label>Commute (min)</label><input class="f-commute mono" inputmode="numeric" placeholder="28"><div class="hint">door to work</div></div>
+      <div class="field"><label>BRF debt /m² (kr)</label><input class="f-debt mono" inputmode="numeric" placeholder="8 000"><div class="hint">årsredovisning</div></div>
+      <div class="field full"><label>% of BRF loans repricing within 12 months</label><input class="f-reset mono" inputmode="numeric" placeholder="e.g. 66 — leave blank if unknown"></div>
+    </div>
+    <div class="besik">
+      <label><input type="checkbox" class="b-pool"><span>pool / sauna</span></label>
+      <label><input type="checkbox" class="b-water"><span>water / nature</span></label>
+      <label><input type="checkbox" class="b-flag"><span>besiktning flag</span></label>
+    </div>`;
+  el.querySelector('.del').onclick=()=>el.remove();
+  el.querySelectorAll(`input[name=ten_${id}]`).forEach(r=>r.onchange=()=>{
+    const isBrf=el.querySelector(`input[name=ten_${id}]:checked`).value==='brf';
+    el.querySelector('.f-avgift-wrap').style.opacity=isBrf?1:.4;});
+  return el;
+}
+const homesEl=document.getElementById('homes');
+function addHome(n){if(homesEl.children.length>=4)return;homesEl.appendChild(homeCard(++homeId,n));}
+addHome();addHome();
+document.getElementById('addBtn').onclick=()=>addHome();
+['cost','brf','commute','space','bonus'].forEach(k=>{const s=document.getElementById('w_'+k),v=document.getElementById('wv_'+k);s.oninput=()=>v.textContent=s.value;});
+function num(el){const v=parseFloat((el.value||'').replace(/[^0-9.]/g,''));return isNaN(v)?null:v;}
+function gather(){return [...homesEl.children].map(c=>{const id=c.dataset.id;const ten=c.querySelector(`input[name=ten_${id}]:checked`).value;
+  return {name:c.querySelector('.nm').value.trim()||'Unnamed',tenure:ten,
+    price:num(c.querySelector('.f-price')),size:num(c.querySelector('.f-size')),avgift:num(c.querySelector('.f-avgift')),
+    drift:num(c.querySelector('.f-drift')),commute:num(c.querySelector('.f-commute')),debt:num(c.querySelector('.f-debt')),
+    reset:num(c.querySelector('.f-reset')),pool:c.querySelector('.b-pool').checked,water:c.querySelector('.b-water').checked,
+    bflag:c.querySelector('.b-flag').checked};});}
+function trueMonthly(h){if(h.price==null)return null;const loan=h.price*0.85;const mortgage=loan*0.045/12;
+  const avg=h.tenure==='brf'?(h.avgift||0):0;const drift=(h.drift||0)/12;return Math.round(mortgage+avg+drift);}
+function normalize(arr,lowerBetter){const vals=arr.filter(v=>v!=null);if(vals.length<2)return arr.map(()=>50);
+  const mn=Math.min(...vals),mx=Math.max(...vals),r=mx-mn||1;return arr.map(v=>{if(v==null)return 50;let s=(v-mn)/r*100;return lowerBetter?100-s:s;});}
+function run(){
+  const homes=gather().filter(h=>h.name!=='Unnamed'||h.price!=null);
+  if(homes.length<1){alert('Add at least one home with a price.');return;}
+  homes.forEach(h=>h.tm=trueMonthly(h));
+  const costN=normalize(homes.map(h=>h.tm),true);
+  const brfRaw=homes.map(h=>h.tenure==='own'?0:((h.reset||0)*0.7+(h.debt?Math.min(h.debt/200,40):0)));
+  const brfN=normalize(brfRaw,true);
+  const comN=normalize(homes.map(h=>h.commute),true);
+  const spcN=normalize(homes.map(h=>h.size),false);
+  const bonRaw=homes.map(h=>(h.pool?60:0)+(h.water?40:0));
+  const bonN=normalize(bonRaw,false);
+  const W={cost:+w_cost.value,brf:+w_brf.value,commute:+w_commute.value,space:+w_space.value,bonus:+w_bonus.value};
+  const WT=(W.cost+W.brf+W.commute+W.space+W.bonus)||1;
+  homes.forEach((h,i)=>h.score=Math.round((costN[i]*W.cost+brfN[i]*W.brf+comN[i]*W.commute+spcN[i]*W.space+bonN[i]*W.bonus)/WT));
+  homes.sort((a,b)=>b.score-a.score);
+  const win=homes[0];
+  homes.forEach((h,i)=>{h.tier=i===0?'go':(h.score>=win.score-15?'maybe':'no');});
+  document.getElementById('winName').textContent=win.name;
+  const reasons=[];
+  if(homes.every(h=>win.tm==null||h.tm==null||win.tm<=h.tm))reasons.push('cheapest to actually live in');
+  if(win.tenure==='own')reasons.push('freehold, no BRF loans over your head');
+  if(win.size&&homes.every(h=>!h.size||win.size>=h.size))reasons.push('most space');
+  if(win.commute&&homes.every(h=>!h.commute||win.commute<=h.commute))reasons.push('best commute');
+  document.getElementById('winWhy').textContent=reasons.length?'Wins on '+reasons.join(', ')+'.':'Top of your weighted scorecard.';
+  document.getElementById('winCost').textContent=win.tm!=null?'~'+fmt(win.tm)+' kr/mån all-in':'price not entered — verify it';
+  const rl=document.getElementById('rankList');rl.innerHTML='';
+  const tt={go:'the pick',maybe:'only if',no:'needs a reason'};
+  homes.forEach((h,i)=>{const meta=[];if(h.tm!=null)meta.push('~'+fmt(h.tm)+' kr/mån');if(h.size)meta.push(h.size+' m²');
+    meta.push(h.tenure==='own'?'freehold':'bostadsrätt');
+    rl.insertAdjacentHTML('beforeend',`<div class="rcard ${i===0?'first':''}"><div class="pos">${i+1}</div>
+      <div class="rinfo"><div class="rn">${h.name}</div><div class="rmeta">${meta.join(' · ')}</div></div>
+      <div style="text-align:right"><span class="tagv ${h.tier}">${tt[h.tier]}</span><div class="rscore" style="margin-top:5px">${h.score}</div></div></div>`);});
+  const fl=document.getElementById('flagList');fl.innerHTML='';
+  homes.forEach(h=>{
+    if(h.tenure==='brf'&&h.reset&&h.reset>=40)fl.insertAdjacentHTML('beforeend',`<div class="flag warn"><span>⚠</span><span><b>${h.name}:</b> about ${h.reset}% of the BRF's loans reprice within a year — the silent avgift bomb. Ask for the post-reset loan plan before falling in love.</span></div>`);
+    if(h.tenure==='brf'&&h.debt&&h.debt>=10000)fl.insertAdjacentHTML('beforeend',`<div class="flag warn"><span>⚠</span><span><b>${h.name}:</b> high BRF debt (${fmt(h.debt)} kr/m²) means more exposure when rates move.</span></div>`);
+    if(h.bflag)fl.insertAdjacentHTML('beforeend',`<div class="flag warn"><span>🔧</span><span><b>${h.name}:</b> has a besiktning flag. Get it quoted — real money, but knowable. Not automatically a dealbreaker.</span></div>`);
+    if(h.tenure==='own')fl.insertAdjacentHTML('beforeend',`<div class="flag ok"><span>🔑</span><span><b>${h.name}:</b> freehold — no BRF rate risk, but you carry all upkeep. Budget a maintenance buffer.</span></div>`);
+  });
+  if(![...fl.children].length)fl.innerHTML=`<div class="flag ok"><span>✓</span><span>No major landmines from what you entered. Still read the full årsredovisning.</span></div>`;
+  const cl=document.getElementById('checkList');cl.innerHTML='';const checks=[];
+  homes.forEach(h=>{if(h.price==null)checks.push([`Confirm asking price for ${h.name}`,'no price entered']);
+    if(h.tenure==='brf'&&h.reset==null)checks.push([`Get the loan-reset plan for ${h.name}'s BRF`,'reset % unknown']);
+    if(h.bflag)checks.push([`Quote the besiktning issue on ${h.name}`,'flagged']);
+    if(h.commute==null)checks.push([`Check real commute time for ${h.name}`,'not entered']);});
+  checks.push(['Read the full årsredovisning for every bostadsrätt','always']);
+  checks.push(['Commission a besiktning before signing','always']);
+  checks.slice(0,9).forEach(c=>cl.insertAdjacentHTML('beforeend',`<label><input type="checkbox"><span>${c[0]} <span class="src">(${c[1]})</span></span></label>`));
+  document.getElementById('results').style.display='block';
+  document.getElementById('results').scrollIntoView({behavior:'smooth'});
+}
+document.getElementById('runBtn').onclick=run;
+document.getElementById('printBtn').onclick=()=>window.print();
+document.getElementById('resetBtn').onclick=()=>{homesEl.innerHTML='';homeId=0;addHome();addHome();document.getElementById('results').style.display='none';window.scrollTo({top:0,behavior:'smooth'});};
+</script>
+</body></html>
